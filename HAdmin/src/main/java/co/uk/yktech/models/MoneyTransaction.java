@@ -18,10 +18,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 public class MoneyTransaction {
 
+	@JsonIgnore
 	private @Id @GeneratedValue Long id;
 	private BigDecimal debit;
 	private BigDecimal credit;
 	private String description;
+	
 	@DateTimeFormat(pattern ="dd/MM/yyyy",  iso = ISO.DATE)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern ="dd/MM/yyyy")
 	private LocalDate date;
@@ -29,9 +31,10 @@ public class MoneyTransaction {
 	
 	@ManyToOne
 	@JoinColumn(name = "FK_BILL")
-	private TransactionBill bill;
-	
 	@JsonIgnore
+	private TransactionBill bill;
+	private String type;
+	
 	public Long getId() {
 		return id;
 	}
@@ -81,6 +84,13 @@ public class MoneyTransaction {
 		return "MoneyTransaction [id=" + id + ", debit=" + debit + ", credit=" + credit + ", description=" + description
 				+ ", date=" + date + "]";
 	}
-		
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
 	
+	
+
 }

@@ -32,5 +32,11 @@ public class MainController {
 		uploadService.upload(file, type);
 		return "home";
 	}
+	
+	
+	@RequestMapping("/viewbill")
+	public String viewBill() {
+		return "viewbill";
+	}
 
 }

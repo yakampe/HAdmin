@@ -14,9 +14,10 @@ public class TransactionBill {
 
 	private @Id @GeneratedValue Long id;
 	private String notes;
-	private BigDecimal total;
+	private BigDecimal totalCredit;
+	private BigDecimal totalDebit;
 
-	@OneToMany(mappedBy = "bill")
+	@OneToMany
 	private Set<MoneyTransaction> transactions;
 	private LocalDate date;
 	public String getNotes() {
@@ -25,11 +26,24 @@ public class TransactionBill {
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
-	public BigDecimal getTotal() {
-		return total;
+	
+	public Long getId() {
+		return id;
 	}
-	public void setTotal(BigDecimal total) {
-		this.total = total;
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public BigDecimal getTotalCredit() {
+		return totalCredit;
+	}
+	public void setTotalCredit(BigDecimal totalCredit) {
+		this.totalCredit = totalCredit;
+	}
+	public BigDecimal getTotalDebit() {
+		return totalDebit;
+	}
+	public void setTotalDebit(BigDecimal totalDebit) {
+		this.totalDebit = totalDebit;
 	}
 	public Set<MoneyTransaction> getTransactions() {
 		return transactions;

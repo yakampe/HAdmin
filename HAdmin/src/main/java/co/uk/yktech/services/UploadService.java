@@ -33,6 +33,7 @@ public class UploadService {
 			allRecords.forEach(line -> {
 				if (type.equals("ND")) {
 					MoneyTransaction mt = new MoneyTransaction();
+					mt.setType("CSV");
 					if (!line[0].toLowerCase().equals("pending")) {
 						mt.setDate(LocalDate.parse(line[0], DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 						mt.setDescription(line[1]);

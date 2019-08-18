@@ -1,8 +1,10 @@
 package co.uk.yktech.controllers;
 
-import java.time.LocalDate;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.uk.yktech.models.TransactionBill;
@@ -20,6 +23,9 @@ import co.uk.yktech.services.TransactionBillService;
 @RequestMapping("bills")
 public class BillController {
 	
+	Logger logger = LoggerFactory.getLogger(getClass());
+
+	@Autowired
 	TransactionBillService transactionBillService;
 	
 	@GetMapping("/")
@@ -39,10 +45,10 @@ public class BillController {
 		return transactionBillService.getBillById(id);
 	}
 	
-	@PostMapping("/{startDate}-{endDate}")
+	@PostMapping("/")
 	public ResponseEntity<TransactionBill> createBill(
-			@PathVariable("startDate") LocalDate startDate,
-			@PathVariable("endDate") LocalDate endDate
+			@RequestParam("from") String startDate,
+			@RequestParam("to") String endDate
 			) {
 		return transactionBillService.createBill(startDate,endDate);
 	}
@@ -55,10 +61,10 @@ public class BillController {
 	}
 	
 	@PutMapping("/")
-	public ResponseEntity<Boolean> updateBill(
+	public void updateBill(
 			@RequestBody TransactionBill transactionBill
 			){
-		return transactionBillService.updateBill(transactionBill);
+		transactionBillService.updateBill(transactionBill);
 	}
 	
 	
