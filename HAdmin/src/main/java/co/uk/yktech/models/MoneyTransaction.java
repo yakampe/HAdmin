@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -24,6 +26,10 @@ public class MoneyTransaction {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern ="dd/MM/yyyy")
 	private LocalDate date;
 	private String owner;
+	
+	@ManyToOne
+	@JoinColumn(name = "FK_BILL")
+	private TransactionBill bill;
 	
 	@JsonIgnore
 	public Long getId() {
@@ -62,6 +68,13 @@ public class MoneyTransaction {
 	}
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+	
+	public TransactionBill getBill() {
+		return bill;
+	}
+	public void setBill(TransactionBill bill) {
+		this.bill = bill;
 	}
 	@Override
 	public String toString() {
