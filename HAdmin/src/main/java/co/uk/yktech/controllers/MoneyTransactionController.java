@@ -22,6 +22,11 @@ public class MoneyTransactionController {
 	private MoneyTransactionService moneyTransactionService;
 	
 	
+	@GetMapping
+	public ResponseEntity<List<MoneyTransaction>> getTransactions(){
+		return moneyTransactionService.getAllTransactions();
+	}
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<MoneyTransaction> getTransaction(@PathVariable("id") Long id) {
 			return moneyTransactionService.getTransactionById(id);

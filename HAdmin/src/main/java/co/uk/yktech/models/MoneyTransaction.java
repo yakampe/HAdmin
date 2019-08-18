@@ -7,6 +7,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class MoneyTransaction {
 
@@ -14,9 +20,12 @@ public class MoneyTransaction {
 	private BigDecimal debit;
 	private BigDecimal credit;
 	private String description;
+	@DateTimeFormat(pattern ="dd/MM/yyyy",  iso = ISO.DATE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern ="dd/MM/yyyy")
 	private LocalDate date;
+	private String owner;
 	
-		
+	@JsonIgnore
 	public Long getId() {
 		return id;
 	}
@@ -47,9 +56,18 @@ public class MoneyTransaction {
 	public void setDate(LocalDate date) {
 		this.date = date;
 	}
-	
-	
-	
-	
+
+	public String getOwner() {
+		return owner;
+	}
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+	@Override
+	public String toString() {
+		return "MoneyTransaction [id=" + id + ", debit=" + debit + ", credit=" + credit + ", description=" + description
+				+ ", date=" + date + "]";
+	}
+		
 	
 }

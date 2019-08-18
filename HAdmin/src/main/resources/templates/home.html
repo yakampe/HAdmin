@@ -1,0 +1,46 @@
+<!doctype html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+
+<title>Starter page</title>
+<meta name="description" content="HomeAdmin">
+<meta name="author" content="Yanis Kampe">
+
+<link rel="stylesheet" href="css/styles.css?v=1.0">
+
+</head>
+
+<body>
+	<h1>Todos</h1>
+	<ul>
+		<li>upload document html</li>
+		<li>wire to method</li>
+		<li>wire to service</li>
+	</ul>
+
+
+	<form method="POST" th:action="@{/importCSV}"
+		enctype="multipart/form-data">
+		<table>
+			<tr>
+			<th colspan="2">CSV Import</th>
+			</tr>
+			<tr>			
+				<td><input type="file" name="file" /></td>
+				<td><select name="type">
+						<option th:value="LL">LLoyds</option>
+						<option th:value="ND">NewDay</option>
+
+				</select></td>
+			</tr>
+			<tr>
+				<td><input type="submit" value="Submit" /></td>
+			</tr>
+		</table>
+	</form>
+
+	<script src="js/scripts.js"></script>
+</body>
+</html>

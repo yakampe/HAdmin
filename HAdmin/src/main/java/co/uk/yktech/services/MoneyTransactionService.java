@@ -3,6 +3,7 @@ package co.uk.yktech.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,8 @@ import co.uk.yktech.repositories.MoneyTransactionRepo;
 
 @Service
 public class MoneyTransactionService {
-
+	
+	@Autowired
 	private MoneyTransactionRepo moneyTransactionRepo;
 	
 	public ResponseEntity<MoneyTransaction> getTransactionById(Long id) {
@@ -27,9 +29,13 @@ public class MoneyTransactionService {
 				moneyTransactionRepo.save(transaction);
 				responses.add(transaction.getDescription() +  " - OK");
 			} catch (Exception e) {
-				responses.add(transaction.getDescription() +  " - ERROR " + e.toString());
+				responses.add(transaction.getDescription() +  " - ERROR " + e.toString() + " @ " + transaction.toString());
 			} 
 		});
 		return responses;
+	}
+
+	public ResponseEntity<List<MoneyTransaction>> getAllTransactions() {
+		return ResponseEntity.status(200).body((List<MoneyTransaction>) moneyTransactionRepo.findAll());
 	}
 }

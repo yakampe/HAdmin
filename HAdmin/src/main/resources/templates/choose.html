@@ -1,0 +1,35 @@
+<!doctype html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+
+  <title>Starter page</title>
+  <meta name="description" content="HomeAdmin">
+  <meta name="author" content="Yanis Kampe">
+
+  <link rel="stylesheet" href="css/styles.css?v=1.0">
+
+</head>
+
+<body>
+<h1>
+Todos
+</h1>
+<ul>
+<li>upload document html</li>
+<li>wire to method</li>
+<li>wire to service</li>
+</ul>
+
+<table>
+<tr>
+<th:block  th:each="title : ${titles}">
+ <th th:text="${title}"></th>
+</th:block>
+</tr>
+</table>
+
+  <script src="js/scripts.js"></script>
+</body>
+</html>
