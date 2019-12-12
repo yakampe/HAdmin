@@ -7,7 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class presetTransactionDescriptions {
+public class PresetTransactionDescriptions {
 
 	@Id @GeneratedValue
 	private Long id;
