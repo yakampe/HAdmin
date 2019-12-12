@@ -1,2 +1,2 @@
 # HAdmin
-A small home-admin app for practicing React and Spring Bot
+Web app project that allows uploading of bank statements for monitoring expenses in one central repository.
