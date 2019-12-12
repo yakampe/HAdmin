@@ -18,5 +18,31 @@ public class TransactionTypeCategoryService {
 		return (List<TransactionTypeCategory>) transactionTypeCategoryRepo.findAll();
 	}
 
+	public TransactionTypeCategory newEntity(TransactionTypeCategory ttc) {
+		return transactionTypeCategoryRepo.save(ttc);
+	}
+
+	public TransactionTypeCategory getEntityById(Long id) {
+		return transactionTypeCategoryRepo.findById(id).get();
+	}
+
+	public TransactionTypeCategory getEntityByCategoryName(String categoryName) {
+		return transactionTypeCategoryRepo.getTransactionTypeCategoryByName(categoryName);
+	}
+
+	public void deleteEntityById(Long id) {
+		transactionTypeCategoryRepo.deleteById(id);
+	}
+
+	public TransactionTypeCategory updateEntityById(Long id, TransactionTypeCategory ttc) {
+		if(transactionTypeCategoryRepo.findById(id).get() != null) {
+			ttc.setId(id);
+			return transactionTypeCategoryRepo.save(ttc);			
+		} else {
+			return null;
+		}
+		
+	}
+
 	
 }

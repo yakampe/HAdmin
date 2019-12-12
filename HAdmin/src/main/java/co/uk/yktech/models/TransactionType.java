@@ -2,25 +2,27 @@ package co.uk.yktech.models;
 
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 @Entity
 public class TransactionType {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private Long id;
 	
+	@Column(unique=true)
 	private String typeName;
 
-	@OneToOne(mappedBy="transactionType")
-	private MoneyTransaction moneyTransaction;
+	@OneToMany(mappedBy="transactionType")
+	private List<MoneyTransaction> moneyTransaction;
 	
 	@ManyToOne
 	@JoinColumn(name = "FK_TRANSACTION_TYPE_CAT")
@@ -46,11 +48,11 @@ public class TransactionType {
 	}
 	public void setTypeName(String typeName) {
 		this.typeName = typeName;
-	}
-	public MoneyTransaction getMoneyTransaction() {
+	}	
+	public List<MoneyTransaction> getMoneyTransaction() {
 		return moneyTransaction;
 	}
-	public void setMoneyTransaction(MoneyTransaction moneyTransaction) {
+	public void setMoneyTransaction(List<MoneyTransaction> moneyTransaction) {
 		this.moneyTransaction = moneyTransaction;
 	}
 	public TransactionTypeCategory getTransactionTypeCategory() {
