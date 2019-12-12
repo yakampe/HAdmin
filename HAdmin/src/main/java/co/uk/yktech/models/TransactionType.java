@@ -27,12 +27,12 @@ public class TransactionType {
 	private TransactionTypeCategory transactionTypeCategory;
 	
 	@OneToMany
-	private List<presetTransactionDescriptions> defaultTransactionTypes;
+	private List<PresetTransactionDescriptions> defaultTransactionTypes;
 	
-	public List<presetTransactionDescriptions> getDefaultTransactionTypes() {
+	public List<PresetTransactionDescriptions> getDefaultTransactionTypes() {
 		return defaultTransactionTypes;
 	}
-	public void setDefaultTransactionTypes(List<presetTransactionDescriptions> defaultTransactionTypes) {
+	public void setDefaultTransactionTypes(List<PresetTransactionDescriptions> defaultTransactionTypes) {
 		this.defaultTransactionTypes = defaultTransactionTypes;
 	}
 	public Long getId() {
