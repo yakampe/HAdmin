@@ -7,5 +7,6 @@ import co.uk.yktech.models.TransactionBill;
 public interface TransactionBillRepo extends CrudRepository<TransactionBill, Long> {
 
 	TransactionBill findFirstByOrderByIdDesc();
-	
+
+
 }

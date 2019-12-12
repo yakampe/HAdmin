@@ -1,5 +1,9 @@
 package co.uk.yktech;
 
+import java.util.TimeZone;
+
+import javax.annotation.PostConstruct;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -10,4 +14,11 @@ public class HAdminApplication {
 		SpringApplication.run(HAdminApplication.class, args);
 	}
 
+	
+	@PostConstruct
+	public void init() {
+	   TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+	   // OR you can use the line below
+	   // System.setProperty("user.timezone", "UTC")
+	}
 }

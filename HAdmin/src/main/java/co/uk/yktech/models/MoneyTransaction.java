@@ -2,12 +2,15 @@ package co.uk.yktech.models;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -18,22 +21,49 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 public class MoneyTransaction {
 
-	@JsonIgnore
 	private @Id @GeneratedValue Long id;
-	private BigDecimal debit;
-	private BigDecimal credit;
-	private String description;
-	
 	@DateTimeFormat(pattern ="dd/MM/yyyy",  iso = ISO.DATE)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern ="dd/MM/yyyy")
 	private LocalDate date;
-	private String owner;
+	private String description;
+	private BigDecimal debit;
+	private BigDecimal credit;
+	
+	@OneToMany
+	private Set<Payment> payments;
 	
 	@ManyToOne
 	@JoinColumn(name = "FK_BILL")
 	@JsonIgnore
 	private TransactionBill bill;
-	private String type;
+	private String type = "Custom";
+	private String owner;
+	
+	@OneToOne
+	private TransactionType transactionType;
+		
+	public TransactionType getTransactionType() {
+		return transactionType;
+	}
+
+	public void setTransactionType(TransactionType transactionType) {
+		this.transactionType = transactionType;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	public Boolean getProcessed() {
+		if(payments.size() > 0) 
+			return true;
+		else
+			return false;
+	}
 	
 	public Long getId() {
 		return id;
@@ -66,13 +96,12 @@ public class MoneyTransaction {
 		this.date = date;
 	}
 
-	public String getOwner() {
-		return owner;
+	public Set<Payment> getPayments() {
+		return payments;
 	}
-	public void setOwner(String owner) {
-		this.owner = owner;
+	public void setPayments(Set<Payment> payments) {
+		this.payments = payments;
 	}
-	
 	public TransactionBill getBill() {
 		return bill;
 	}
