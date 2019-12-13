@@ -37,7 +37,7 @@ public class UploadService {
 			return String.format("Added %d new transactions", allRecords.stream()
 				.map(record -> convertStatementRowToMoneyTransaction(record, type))
 				.filter(r -> r != null)
-				.collect(Collectors.collectingAndThen(Collectors.toList(), moneyTransactionService::createTransactions))
+				.collect(Collectors.collectingAndThen(Collectors.toList(), moneyTransactionService::createTransactionsWithPOJO))
 				.size());
 						
 		} catch (IOException e) {

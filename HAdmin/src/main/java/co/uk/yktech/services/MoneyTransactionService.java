@@ -6,13 +6,18 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
+import org.modelmapper.Conditions;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import co.uk.yktech.dto.MoneyTransactionDTO;
 import co.uk.yktech.models.MoneyTransaction;
 import co.uk.yktech.repositories.MoneyTransactionRepo;
 
@@ -24,37 +29,63 @@ public class MoneyTransactionService {
 	@Autowired
 	private MoneyTransactionRepo moneyTransactionRepo;
 	
-	public ResponseEntity<MoneyTransaction> getTransactionById(Long id) {
-		//TODO Create not found logic?
-		
-		return ResponseEntity.status(200).body(moneyTransactionRepo.findById(id).get());
+    @Autowired
+    private ModelMapper modelMapper;
+	
+	public MoneyTransactionDTO getTransactionById(Long id) {		
+		return convertToDto(moneyTransactionRepo.findById(id).get());
 	}
 
-	public List<String> createTransactions(List<MoneyTransaction> transactions) {
-		Logger logger = LoggerFactory.getLogger(getClass());
-		logger.info(transactions.toString());
+	public List<String> createTransactions(List<MoneyTransactionDTO> transactions) {
+		List<String> responses = new ArrayList<>();
+		transactions.forEach(transaction -> {
+			try {
+				moneyTransactionRepo.save(convertToEntity(transaction));
+				responses.add(transaction.getDescription() +  " - OK");
+			} catch (Exception e) {
+				logger.error(e.toString());
+				responses.add(transaction.getDescription() +  " - ERROR " + e.toString() + " @ " + transaction.toString());
+			} 
+		});
+		return responses;
+	}
+	
+	public List<String> createTransactionsWithPOJO(List<MoneyTransaction> transactions) {
 		List<String> responses = new ArrayList<>();
 		transactions.forEach(transaction -> {
 			try {
 				moneyTransactionRepo.save(transaction);
 				responses.add(transaction.getDescription() +  " - OK");
 			} catch (Exception e) {
+				logger.error(e.toString());
 				responses.add(transaction.getDescription() +  " - ERROR " + e.toString() + " @ " + transaction.toString());
 			} 
 		});
 		return responses;
 	}
 
-	public ResponseEntity<List<MoneyTransaction>> getAllTransactions() {
-		return ResponseEntity.status(200).body((List<MoneyTransaction>) moneyTransactionRepo.findAll());
+	public List<MoneyTransactionDTO> getAllTransactions() {	
+		return  ((List<MoneyTransaction>) moneyTransactionRepo.findAll())
+				.stream()
+				.map(mt -> {
+					logger.info(mt.toString());
+					return convertToDto(mt);
+				})
+				.collect(Collectors.toList());
 	}
 
-	public ResponseEntity<Boolean> updateTransaction(MoneyTransaction transaction) {
-		moneyTransactionRepo.save(transaction);
-		return ResponseEntity.status(200).body(true);
+	public Boolean updateTransaction(MoneyTransactionDTO mtDto) {
+		MoneyTransaction mt = moneyTransactionRepo.findById(mtDto.getId()).get();
+		modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
+		modelMapper.map(mtDto, mt);
+		
+		logger.info(modelMapper.getConfiguration().getPropertyCondition().toString());
+		
+		moneyTransactionRepo.save(mt);
+		return true;
 	}
 	
-	public ResponseEntity<Set<MoneyTransaction>> getTransactionsBetweenDates(String startDateString, String endDateString, boolean includeBilled){
+	public Set<MoneyTransactionDTO> getTransactionsBetweenDates(String startDateString, String endDateString, boolean includeBilled){
 		LocalDate startDate = LocalDate.parse(startDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		LocalDate endDate = LocalDate.parse(endDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		Set<MoneyTransaction> mt = new HashSet<>();
@@ -66,7 +97,32 @@ public class MoneyTransactionService {
 			mt = moneyTransactionRepo.getNotBilledBetweenDates(startDate, endDate);			
 		}
 		
-		return ResponseEntity.status(200).body(mt);
+		return mt
+				.stream()
+				.map(obj -> convertToDto(obj))
+				.collect(Collectors.toSet());
 		
 	}
+	
+	
+	private MoneyTransactionDTO convertToDto(MoneyTransaction mt) {
+
+		MoneyTransactionDTO mtDto = modelMapper.map(mt, MoneyTransactionDTO.class);
+		mtDto.setTransactionType(mt.getTransactionType() != null ? mt.getTransactionType().getTypeName() : null);
+		mtDto.setBillId(mt.getBill() != null ? mt.getBill().getId() : null);
+		
+		return mtDto;	
+	}
+	
+	private MoneyTransaction convertToEntity(MoneyTransactionDTO mtDto) {
+		MoneyTransaction mt = modelMapper.map(mtDto, MoneyTransaction.class);
+		return mt;
+	}
+
+	@Transactional
+	public void deleteEntityById(Long id) {
+		moneyTransactionRepo.deleteById(id);
+	}
+	
+	
 }
