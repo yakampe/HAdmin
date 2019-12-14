@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.uk.yktech.models.TransactionType;
+import co.uk.yktech.dto.TransactionTypeDto;
 import co.uk.yktech.services.TransactionTypeService;
 
 @RestController
@@ -26,22 +26,22 @@ public class TransactionTypeController {
 	
 	
 	@GetMapping("/")
-	public ResponseEntity<List<TransactionType>> getEntities() {
+	public ResponseEntity<List<TransactionTypeDto>> getEntities() {
 		return new ResponseEntity<>(transactionTypeService.getAllEntities(), HttpStatus.OK);
 	}
 	
 	@PostMapping("/")
-	public ResponseEntity<TransactionType> newEntity (@RequestBody TransactionType tt) {
-		return new ResponseEntity<>(transactionTypeService.newEntity(tt), HttpStatus.CREATED);
+	public ResponseEntity<TransactionTypeDto> newEntity (@RequestBody TransactionTypeDto ttDto) {
+		return new ResponseEntity<>(transactionTypeService.newEntity(ttDto), HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<TransactionType> getEntityById(@PathVariable("id") String id){
-		return new ResponseEntity<>(transactionTypeService.getEntityById(Long.parseLong(id)), HttpStatus.OK);
+	public ResponseEntity<TransactionTypeDto> getEntityById(@PathVariable("id") Long id){
+		return new ResponseEntity<>(transactionTypeService.getEntityById(id), HttpStatus.OK);
 	}
 	
 	@GetMapping("/type/{typeName}")
-	public ResponseEntity<TransactionType> getEntityByCategoryName(@PathVariable("typeName") String typeName){
+	public ResponseEntity<TransactionTypeDto> getEntityByCategoryName(@PathVariable("typeName") String typeName){
 		return new ResponseEntity<>(transactionTypeService.getEntityByTypeName(typeName), HttpStatus.OK);
 	}
 	
@@ -52,9 +52,8 @@ public class TransactionTypeController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<TransactionType> updateEntity(@PathVariable("id") Long id,
-												@RequestBody TransactionType tt) {
-		return new ResponseEntity<>(transactionTypeService.updateEntityById(id, tt),HttpStatus.OK);	
+	public ResponseEntity<TransactionTypeDto> updateEntity(@RequestBody TransactionTypeDto ttDto) {
+		return new ResponseEntity<>(transactionTypeService.updateEntity(ttDto),HttpStatus.OK);	
 	}
 	
 	
