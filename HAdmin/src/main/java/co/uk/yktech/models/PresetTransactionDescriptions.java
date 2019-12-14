@@ -15,6 +15,17 @@ public class PresetTransactionDescriptions {
 	@ManyToOne
 	@JoinColumn(name = "FK_TRANSACTION_TYPE")	
 	private TransactionType transactionType;
+	
+	private String presetDescription;
+	
+
+	public String getPresetDescription() {
+		return presetDescription;
+	}
+
+	public void setPresetDescription(String presetDescription) {
+		this.presetDescription = presetDescription;
+	}
 
 	public Long getId() {
 		return id;

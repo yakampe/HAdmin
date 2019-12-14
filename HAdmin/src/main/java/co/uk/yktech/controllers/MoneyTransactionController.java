@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.uk.yktech.dto.MoneyTransactionDTO;
+import co.uk.yktech.dto.MoneyTransactionDto;
 import co.uk.yktech.services.MoneyTransactionService;
 
 @RestController
@@ -27,28 +27,28 @@ public class MoneyTransactionController {
 	private MoneyTransactionService moneyTransactionService;
 	
 	@GetMapping("/")
-	public ResponseEntity<List<MoneyTransactionDTO>> getTransactions(){
+	public ResponseEntity<List<MoneyTransactionDto>> getTransactions(){
 		
 		return new ResponseEntity<>(moneyTransactionService.getAllTransactions() ,HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<MoneyTransactionDTO> getTransaction(@PathVariable("id") Long id) {
+	public ResponseEntity<MoneyTransactionDto> getTransaction(@PathVariable("id") Long id) {
 		return new ResponseEntity<>(moneyTransactionService.getTransactionById(id), HttpStatus.OK);
 	}
 	
 	@PostMapping("/")
-	public ResponseEntity<List<String>> createTransaction(@RequestBody List<MoneyTransactionDTO> transactions) {
+	public ResponseEntity<List<String>> createTransaction(@RequestBody List<MoneyTransactionDto> transactions) {
 		return new ResponseEntity<>(moneyTransactionService.createTransactions(transactions), HttpStatus.OK);
 	}
 	
 	@PutMapping("/")
-	public ResponseEntity<Boolean> updateTransaction(@RequestBody MoneyTransactionDTO transaction){
+	public ResponseEntity<Boolean> updateTransaction(@RequestBody MoneyTransactionDto transaction){
 		return new ResponseEntity<>(moneyTransactionService.updateTransaction(transaction), HttpStatus.OK);
 	}
 	
 	@GetMapping(path="/", params={"from", "to"})
-	public ResponseEntity<Set<MoneyTransactionDTO>> getTransactionsBetweenDates(
+	public ResponseEntity<Set<MoneyTransactionDto>> getTransactionsBetweenDates(
 			@RequestParam("from") String from,
 			@RequestParam("to") String to,
 			@RequestParam(name="billed", required=false) boolean includeBilled){

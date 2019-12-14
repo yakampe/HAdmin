@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.uk.yktech.models.TransactionTypeCategory;
+import co.uk.yktech.dto.TransactionTypeCategoryDto;
 import co.uk.yktech.services.TransactionTypeCategoryService;
 
 @RestController
@@ -26,22 +26,22 @@ public class TransactionTypeCategoryController {
 	
 	
 	@GetMapping("/")
-	public ResponseEntity<List<TransactionTypeCategory>> getAllEntities(){
+	public ResponseEntity<List<TransactionTypeCategoryDto>> getAllEntities(){
 		return new ResponseEntity<>(transactionTypeCategoryService.getAllEntities(), HttpStatus.OK);
 	}
 	
 	@PostMapping("/")
-	public ResponseEntity<TransactionTypeCategory> newEntity (@RequestBody TransactionTypeCategory ttc) {
-		return new ResponseEntity<>(transactionTypeCategoryService.newEntity(ttc), HttpStatus.CREATED);
+	public ResponseEntity<TransactionTypeCategoryDto> newEntity (@RequestBody TransactionTypeCategoryDto ttcDto) {
+		return new ResponseEntity<>(transactionTypeCategoryService.newEntity(ttcDto), HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<TransactionTypeCategory> getEntityById(@PathVariable("id") Long id){
+	public ResponseEntity<TransactionTypeCategoryDto> getEntityById(@PathVariable("id") Long id){
 		return new ResponseEntity<>(transactionTypeCategoryService.getEntityById(id), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{categoryName}")
-	public ResponseEntity<TransactionTypeCategory> getEntityByCategoryName(@PathVariable("categoryName") String categoryName){
+	public ResponseEntity<TransactionTypeCategoryDto> getEntityByCategoryName(@PathVariable("categoryName") String categoryName){
 		return new ResponseEntity<>(transactionTypeCategoryService.getEntityByCategoryName(categoryName), HttpStatus.OK);
 	}
 	
@@ -51,10 +51,9 @@ public class TransactionTypeCategoryController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	@PutMapping("/{id}")
-	public ResponseEntity<TransactionTypeCategory> updateEntity(@PathVariable("id") Long id,
-												@RequestBody TransactionTypeCategory ttc) {
-		return new ResponseEntity<>(transactionTypeCategoryService.updateEntityById(id, ttc),HttpStatus.OK);		
+	@PutMapping("/")
+	public ResponseEntity<TransactionTypeCategoryDto> updateEntity(@RequestBody TransactionTypeCategoryDto ttcDto) {
+		return new ResponseEntity<>(transactionTypeCategoryService.updateEntity(ttcDto),HttpStatus.OK);		
 	}
 	
 	

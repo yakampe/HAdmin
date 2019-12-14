@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import co.uk.yktech.models.Payment;
 
-public class MoneyTransactionDTO {
+public class MoneyTransactionDto {
 
 	
 	private Long id;
