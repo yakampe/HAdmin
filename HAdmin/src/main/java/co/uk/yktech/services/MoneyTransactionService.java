@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import co.uk.yktech.dto.MoneyTransactionDTO;
+import co.uk.yktech.dto.MoneyTransactionDto;
 import co.uk.yktech.models.MoneyTransaction;
 import co.uk.yktech.repositories.MoneyTransactionRepo;
 
@@ -32,11 +32,11 @@ public class MoneyTransactionService {
     @Autowired
     private ModelMapper modelMapper;
 	
-	public MoneyTransactionDTO getTransactionById(Long id) {		
+	public MoneyTransactionDto getTransactionById(Long id) {		
 		return convertToDto(moneyTransactionRepo.findById(id).get());
 	}
 
-	public List<String> createTransactions(List<MoneyTransactionDTO> transactions) {
+	public List<String> createTransactions(List<MoneyTransactionDto> transactions) {
 		List<String> responses = new ArrayList<>();
 		transactions.forEach(transaction -> {
 			try {
@@ -64,7 +64,7 @@ public class MoneyTransactionService {
 		return responses;
 	}
 
-	public List<MoneyTransactionDTO> getAllTransactions() {	
+	public List<MoneyTransactionDto> getAllTransactions() {	
 		return  ((List<MoneyTransaction>) moneyTransactionRepo.findAll())
 				.stream()
 				.map(mt -> {
@@ -74,7 +74,7 @@ public class MoneyTransactionService {
 				.collect(Collectors.toList());
 	}
 
-	public Boolean updateTransaction(MoneyTransactionDTO mtDto) {
+	public Boolean updateTransaction(MoneyTransactionDto mtDto) {
 		MoneyTransaction mt = moneyTransactionRepo.findById(mtDto.getId()).get();
 		modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
 		modelMapper.map(mtDto, mt);
@@ -85,7 +85,7 @@ public class MoneyTransactionService {
 		return true;
 	}
 	
-	public Set<MoneyTransactionDTO> getTransactionsBetweenDates(String startDateString, String endDateString, boolean includeBilled){
+	public Set<MoneyTransactionDto> getTransactionsBetweenDates(String startDateString, String endDateString, boolean includeBilled){
 		LocalDate startDate = LocalDate.parse(startDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		LocalDate endDate = LocalDate.parse(endDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		Set<MoneyTransaction> mt = new HashSet<>();
@@ -104,25 +104,25 @@ public class MoneyTransactionService {
 		
 	}
 	
+	@Transactional
+	public void deleteEntityById(Long id) {
+		moneyTransactionRepo.deleteById(id);
+	}
 	
-	private MoneyTransactionDTO convertToDto(MoneyTransaction mt) {
+	private MoneyTransactionDto convertToDto(MoneyTransaction mt) {
 
-		MoneyTransactionDTO mtDto = modelMapper.map(mt, MoneyTransactionDTO.class);
+		MoneyTransactionDto mtDto = modelMapper.map(mt, MoneyTransactionDto.class);
 		mtDto.setTransactionType(mt.getTransactionType() != null ? mt.getTransactionType().getTypeName() : null);
 		mtDto.setBillId(mt.getBill() != null ? mt.getBill().getId() : null);
 		
 		return mtDto;	
 	}
 	
-	private MoneyTransaction convertToEntity(MoneyTransactionDTO mtDto) {
+	private MoneyTransaction convertToEntity(MoneyTransactionDto mtDto) {
 		MoneyTransaction mt = modelMapper.map(mtDto, MoneyTransaction.class);
 		return mt;
 	}
 
-	@Transactional
-	public void deleteEntityById(Long id) {
-		moneyTransactionRepo.deleteById(id);
-	}
 	
 	
 }
