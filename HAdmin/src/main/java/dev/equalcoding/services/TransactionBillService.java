@@ -8,7 +8,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.modelmapper.Conditions;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import dev.equalcoding.dto.TransactionBillDto;
 import dev.equalcoding.models.MoneyTransaction;
 import dev.equalcoding.models.Payment;
 import dev.equalcoding.models.Person;
@@ -38,21 +42,27 @@ public class TransactionBillService {
 	
 	@Autowired
 	PaymentRepository paymentRepo;
+	
+	@Autowired
+	ModelMapper modelMapper;
 
-	public ResponseEntity<List<TransactionBill>> getAllBills() {
-		return ResponseEntity.status(200).body((List<TransactionBill>) transactionBillRepo.findAll());
+	public List<TransactionBillDto> getAllBills() {
+		return ((List<TransactionBill>) transactionBillRepo.findAll())
+				.stream()
+				.map(tb -> convertToDto(tb))
+				.collect(Collectors.toList());
 	}
 
-	public ResponseEntity<TransactionBill> getLatestBill() {
-		return ResponseEntity.status(200).body(transactionBillRepo.findFirstByOrderByIdDesc());
+	public TransactionBillDto getLatestBill() {
+		return convertToDto(transactionBillRepo.findFirstByOrderByIdDesc());
 	}
 
-	public ResponseEntity<TransactionBill> getBillById(Long id) {
-		return ResponseEntity.status(200).body(transactionBillRepo.findById(id).get());
+	public TransactionBillDto getBillById(Long id) {
+		return convertToDto(transactionBillRepo.findById(id).get());
 	}
 
 	@Transactional
-	public ResponseEntity<TransactionBill> createBill(String startDateString, String endDateString) {
+	public TransactionBillDto createBill(String startDateString, String endDateString) {
 		BigDecimal totalDebit = BigDecimal.valueOf(0);
 		BigDecimal totalCredit = BigDecimal.valueOf(0);
 
@@ -104,7 +114,7 @@ public class TransactionBillService {
 			paymentsForBill.add(newPayment);
 			paymentRepo.save(newPayment);		
 		});
-		return ResponseEntity.status(200).body(tb);
+		return convertToDto(tb);
 	}
 
 	@Transactional
@@ -124,8 +134,24 @@ public class TransactionBillService {
 			return ResponseEntity.status(HttpStatus.OK).body(true);
 	}
 
-	public void updateBill(TransactionBill transactionBill) {
-		transactionBillRepo.save(transactionBill);
+	public void updateBill(TransactionBillDto tbDto) {
+		TransactionBill tb = transactionBillRepo.findById(tbDto.getId()).get();
+		modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
+		modelMapper.map(tbDto, tb);
+		transactionBillRepo.save(tb);
+	}
+	
+	private TransactionBillDto convertToDto(TransactionBill tb) {
+
+		TransactionBillDto tbDto = modelMapper.map(tb, TransactionBillDto.class);
+		
+		return tbDto;	
+	}
+	
+	private TransactionBill convertToEntity(TransactionBillDto tbDto) {
+		TransactionBill tb = modelMapper.map(tbDto, TransactionBill.class);
+				
+		return tb;
 	}
 
 }
