@@ -2,14 +2,13 @@ package dev.equalcoding.dto;
 
 import java.util.List;
 
-import dev.equalcoding.models.MoneyTransaction;
 import dev.equalcoding.models.PresetTransactionDescriptions;
 
 public class TransactionTypeDto {
 
 	private Long id;
 	private String typeName;
-	private List<MoneyTransaction> moneyTransaction;
+	private List<MoneyTransactionDto> moneyTransaction;
 	private String Category;
 	private List<PresetTransactionDescriptions> defaultTransactionTypes;
 	
@@ -26,10 +25,11 @@ public class TransactionTypeDto {
 	public void setTypeName(String typeName) {
 		this.typeName = typeName;
 	}
-	public List<MoneyTransaction> getMoneyTransaction() {
+	
+	public List<MoneyTransactionDto> getMoneyTransaction() {
 		return moneyTransaction;
 	}
-	public void setMoneyTransaction(List<MoneyTransaction> moneyTransaction) {
+	public void setMoneyTransaction(List<MoneyTransactionDto> moneyTransaction) {
 		this.moneyTransaction = moneyTransaction;
 	}
 	public String getCategory() {

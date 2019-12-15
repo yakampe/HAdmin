@@ -3,6 +3,8 @@ package dev.equalcoding.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +14,17 @@ import dev.equalcoding.dto.TransactionTypeCategoryDto;
 import dev.equalcoding.models.TransactionType;
 import dev.equalcoding.models.TransactionTypeCategory;
 import dev.equalcoding.repositories.TransactionTypeCategoryRepository;
+import dev.equalcoding.repositories.TransactionTypeRepository;
 
 @Service
 public class TransactionTypeCategoryService {
 
 	@Autowired
 	TransactionTypeCategoryRepository transactionTypeCategoryRepo;
+	
+	@Autowired
+	TransactionTypeRepository transactionTypeRepo;
+	
 	
 	@Autowired
 	ModelMapper modelMapper;
@@ -45,11 +52,27 @@ public class TransactionTypeCategoryService {
 		transactionTypeCategoryRepo.deleteById(id);
 	}
 
+	
+	@Transactional
 	public TransactionTypeCategoryDto updateEntity(TransactionTypeCategoryDto ttcDto) {
 	
 		TransactionTypeCategory ttc = transactionTypeCategoryRepo.findById(ttcDto.getId()).get();
 		modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
 		modelMapper.map(ttcDto, ttc);
+		
+		//go through DTO names and populate the TTC pojo with the entities and set those entities
+		if(ttc.getTransactionTypes() != null && ttcDto.getTransactionTypes().size() != ttc.getTransactionTypes().size()) {
+			ttc.setTransactionTypes(
+					ttcDto.getTransactionTypes()
+					.stream()
+					.map(typeString -> transactionTypeRepo.getEntityByTypeName(typeString))
+					.map(tt-> {
+						tt.setTransactionTypeCategory(ttc);
+						return transactionTypeRepo.save(tt);
+					})
+					.collect(Collectors.toSet()));
+		};
+		
 		
 		return convertToDto(transactionTypeCategoryRepo.save(ttc));				
 	}
