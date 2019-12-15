@@ -40,7 +40,7 @@ public class TransactionTypeCategoryController {
 		return new ResponseEntity<>(transactionTypeCategoryService.getEntityById(id), HttpStatus.OK);
 	}
 	
-	@GetMapping("/{categoryName}")
+	@GetMapping("/type/{categoryName}")
 	public ResponseEntity<TransactionTypeCategoryDto> getEntityByCategoryName(@PathVariable("categoryName") String categoryName){
 		return new ResponseEntity<>(transactionTypeCategoryService.getEntityByCategoryName(categoryName), HttpStatus.OK);
 	}

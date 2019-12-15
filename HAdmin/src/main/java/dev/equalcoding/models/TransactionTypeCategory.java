@@ -17,7 +17,7 @@ public class TransactionTypeCategory {
 	@Column(unique=true)
 	private String categoryName;
 	
-	@OneToMany
+	@OneToMany(mappedBy = "transactionTypeCategory")
 	private Set<TransactionType> transactionTypes;
 
 	public Long getId() {
